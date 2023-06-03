@@ -48,11 +48,7 @@ ExportedObj
 
 *.mp4.meta
  
-# ============ #
- 
-# OS generated #
- 
-# ============ #
+
  
 .DS_Store
  
@@ -75,3 +71,12 @@ GraphicsSettings.asset
 ProjectSettings.asset
  
 ProjectVersion.txt
+
+# ============ #
+ 
+# Personal Setting #
+ 
+# ============ #
+
+pathinfo.txt
+pathinfo.txt.meta
