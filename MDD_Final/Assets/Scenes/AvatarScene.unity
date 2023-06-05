@@ -669,7 +669,8 @@ GameObject:
   - component: {fileID: 832662754}
   - component: {fileID: 832662753}
   - component: {fileID: 832662752}
-  - component: {fileID: 832662751}
+  - component: {fileID: 832662755}
+  - component: {fileID: 832662756}
   m_Layer: 5
   m_Name: 'RecordButton '
   m_TagString: Untagged
@@ -698,20 +699,6 @@ RectTransform:
   m_AnchoredPosition: {x: 51.8, y: 0}
   m_SizeDelta: {x: 366.7567, y: 68.7669}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &832662751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 832662749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7945d3a87aaf2e24087ba687e3db0d0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _toggleGroup_micList: {fileID: 1600070967}
-  rec_second: 2
 --- !u!114 &832662752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,8 +743,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 832662751}
-        m_TargetAssemblyTypeName: RealTime_REC_NOW, Assembly-CSharp
+      - m_Target: {fileID: 832662755}
+        m_TargetAssemblyTypeName: SetRECDevice, Assembly-CSharp
         m_MethodName: ShowSelectToggleName
         m_Mode: 1
         m_Arguments:
@@ -806,6 +793,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832662749}
   m_CullTransparentMesh: 1
+--- !u!114 &832662755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832662749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dedef068a4f0406419958a5ca5bc00bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clip: {fileID: 0}
+  _toggleGroup_micList: {fileID: 1600070967}
+  _source: {fileID: 0}
+--- !u!114 &832662756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832662749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a24c9a546e222478a33ff94e303b15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  source: {fileID: 0}
 --- !u!1 &881307463
 GameObject:
   m_ObjectHideFlags: 0
