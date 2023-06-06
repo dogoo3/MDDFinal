@@ -30,14 +30,15 @@ def main(args):
               data_pipe_dir = '../gesticulator/utils/data_pipe.sav')
 
     # Add the audio to the video
-    command = f"ffmpeg -y -i {args.audio} -i temp.mp4 -c:v libx264 -c:a libvorbis -loglevel quiet -shortest {args.video_out}"
-    subprocess.call(command.split())
+    # command = f"ffmpeg -y -i {args.audio} -i temp.mp4 -c:v libx264 -c:a libvorbis -loglevel quiet -shortest {args.video_out}"
+    # subprocess.call(command.split())
 
-    print("\nGenerated video:", args.video_out)
+    # print("\nGenerated video:", args.video_out)
     
     # Remove temporary files
-    for ext in ["bvh", "npy", "mp4"]:
-        os.remove("temp." + ext)
+    # for ext in ["bvh", "npy", "mp4"]:
+    #     os.remove("temp." + ext)
+    print("SUCCESS MAKE BVH FILE")
 
 def check_feature_type(model_file):
     """
@@ -102,12 +103,7 @@ def parse_args():
     
     return parser.parse_args()
 
-def asd():
-    return 300
-
 if __name__ == "__main__":
     args = parse_args()
     
     main(args)
-
-

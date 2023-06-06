@@ -35,7 +35,7 @@ def visualize(motion_in, bvh_file, npy_file, mp4_file, start_t, end_t, data_pipe
     convert_bvh2npy(bvh_file, npy_file)
 
     # Visualize those 3D coordinates
-    create_video(npy_file, mp4_file, start_t, end_t)
+    # create_video(npy_file, mp4_file, start_t, end_t)
 
 def generate_videos(raw_input_folder, output_folder, run_name, data_pipe_dir, start_t=0, end_t=10):
 # Go over all the results we have
