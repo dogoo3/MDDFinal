@@ -9,15 +9,13 @@ public class SetRECDevice : MonoBehaviour
 {
     [SerializeField] private AudioClip _clip;
     [SerializeField] private ToggleGroup _toggleGroup_micList;
-    [SerializeField] private AudioSource _source;
-    
-    private SaveAudio _csrAPI;
     private Text _buttonText;
+    private APISelector _apiSelector;
 
     private void Awake()
     {
-        this._csrAPI = GetComponent<SaveAudio>();
         this._buttonText = this.gameObject.GetComponentInChildren<Text>();
+        this._apiSelector = FindObjectOfType<APISelector>();
     }
 
     private Toggle selectToggle
@@ -33,13 +31,15 @@ public class SetRECDevice : MonoBehaviour
     {
         if (!Microphone.IsRecording(selectToggle.name)) // 녹음 시작
         {
+            Debug.Log("녹음 시작");
+            
             this._buttonText.text = "녹음 종료";
             DeviceManager.instance.SetAllToggleInteracable(false); // 녹음을 시작하면 Toggle을 조작할 수 없도록 모든 토글을 비활성화하는 함수를 호출
             this._clip = Microphone.Start(selectToggle.name, true, 15, 44100); // 녹음 시작
         }
         else // 녹음 종료
         {
-            this._buttonText.text = "녹음 시작";
+            this._buttonText.text = "(1/8) 녹음 시작";
             DeviceManager.instance.SetAllToggleInteracable(true); // 녹음을 정지하면 다시 Toggle을 조작할 수 있도록 모든 토글을 활성화하는 함수를 호출
             int t_sIndex = Microphone.GetPosition(selectToggle.name); // 현재까지 녹음된 sample의 index를 반환
             Microphone.End(selectToggle.name); // 녹음 종료
@@ -52,8 +52,17 @@ public class SetRECDevice : MonoBehaviour
             AudioClip _clip2 = AudioClip.Create("rec", cutSamples.Length, 1, 44100, false); // 새로운 AudioClip을 만듬
             _clip2.SetData(cutSamples, 0); // _clip2에 cutSample의 데이터 할당
             
-            STTAPI.instance.SendAudioSample(_clip2);
-            _csrAPI.SaveAudioClip(_clip2);
+            Debug.Log("(2/8) 녹음 종료");
+
+            // API 타입에 따라 API 실행 분기
+            if (_apiSelector.GetAPIType() == APISelector.APIType.Clova)
+            {
+                STTClova.instance.SendAudioSample(_clip2);    
+            }
+            else if (_apiSelector.GetAPIType() == APISelector.APIType.Azure)
+            {
+                STTAzure.instance.SendAudioSample(_clip2);       
+            }
         }
     }
 }

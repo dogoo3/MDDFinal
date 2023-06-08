@@ -19,6 +19,7 @@ public static class ReadPythonPath
             personalPaths[i] = _tempStr[1];
             i++;
         }
+        
         reader.Close();
     }
 
