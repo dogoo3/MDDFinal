@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class APISelector : MonoBehaviour
+public class STTSelector : MonoBehaviour
 {
     [SerializeField] private APIType apiType;
     

@@ -8,12 +8,14 @@ using UnityEngine.Networking;
 public class STTClova : MonoBehaviour
 {
     public static STTClova instance;
-    private AvatarManager _avatarManager;
+    [SerializeField] private string apiKeyId;
+    [SerializeField] private string apiKey;
+    private SkeletonHandler _skeletonHandler;
 
     private void Awake()
     {
         instance = this;
-        this._avatarManager = FindObjectOfType<AvatarManager>();
+        this._skeletonHandler = FindObjectOfType<SkeletonHandler>();
     }
 
     private IEnumerator PostRecordData(string url, AudioClip _clip)
@@ -23,8 +25,8 @@ public class STTClova : MonoBehaviour
 
         UnityWebRequest www = UnityWebRequest.Post(url, form);
 
-        www.SetRequestHeader("X-NCP-APIGW-API-KEY-ID", "qhat4s91jn");
-        www.SetRequestHeader("X-NCP-APIGW-API-KEY", "oM48E0sHtOVQf0QOAIkSFrdjTjygqlLEjCSHPk9l");
+        www.SetRequestHeader("X-NCP-APIGW-API-KEY-ID", this.apiKeyId);
+        www.SetRequestHeader("X-NCP-APIGW-API-KEY", this.apiKey);
         www.SetRequestHeader("Content-Type", "application/octet-stream");
 
         www.uploadHandler = new UploadHandlerRaw(SavWav.GetWav(_clip, out var length));
@@ -48,10 +50,10 @@ public class STTClova : MonoBehaviour
                 Debug.Log("(4/8) STT 종료");
                 
                 // 아바타 실행
-                _avatarManager.RunAvatar(
+                _skeletonHandler.RunSkeleton(
                     System.Text.Encoding.UTF8.GetString(www.downloadHandler.data),
-                    _clip,
-                    wavFilePath
+                    wavFilePath,
+                    _clip
                 );
             }
         }

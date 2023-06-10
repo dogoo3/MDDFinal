@@ -10,12 +10,12 @@ public class SetRECDevice : MonoBehaviour
     [SerializeField] private AudioClip _clip;
     [SerializeField] private ToggleGroup _toggleGroup_micList;
     private Text _buttonText;
-    private APISelector _apiSelector;
+    private STTSelector _sttSelector;
 
     private void Awake()
     {
         this._buttonText = this.gameObject.GetComponentInChildren<Text>();
-        this._apiSelector = FindObjectOfType<APISelector>();
+        this._sttSelector = FindObjectOfType<STTSelector>();
     }
 
     private Toggle selectToggle
@@ -31,7 +31,7 @@ public class SetRECDevice : MonoBehaviour
     {
         if (!Microphone.IsRecording(selectToggle.name)) // 녹음 시작
         {
-            Debug.Log("녹음 시작");
+            Debug.Log("(1/8) 녹음 시작");
             
             this._buttonText.text = "녹음 종료";
             DeviceManager.instance.SetAllToggleInteracable(false); // 녹음을 시작하면 Toggle을 조작할 수 없도록 모든 토글을 비활성화하는 함수를 호출
@@ -39,7 +39,7 @@ public class SetRECDevice : MonoBehaviour
         }
         else // 녹음 종료
         {
-            this._buttonText.text = "(1/8) 녹음 시작";
+            this._buttonText.text = "녹음 시작";
             DeviceManager.instance.SetAllToggleInteracable(true); // 녹음을 정지하면 다시 Toggle을 조작할 수 있도록 모든 토글을 활성화하는 함수를 호출
             int t_sIndex = Microphone.GetPosition(selectToggle.name); // 현재까지 녹음된 sample의 index를 반환
             Microphone.End(selectToggle.name); // 녹음 종료
@@ -54,12 +54,12 @@ public class SetRECDevice : MonoBehaviour
             
             Debug.Log("(2/8) 녹음 종료");
 
-            // API 타입에 따라 API 실행 분기
-            if (_apiSelector.GetAPIType() == APISelector.APIType.Clova)
+            // API 타입에 따라 STT 실행 분기
+            if (_sttSelector.GetAPIType() == STTSelector.APIType.Clova)
             {
                 STTClova.instance.SendAudioSample(_clip2);    
             }
-            else if (_apiSelector.GetAPIType() == APISelector.APIType.Azure)
+            else if (_sttSelector.GetAPIType() == STTSelector.APIType.Azure)
             {
                 STTAzure.instance.SendAudioSample(_clip2);       
             }

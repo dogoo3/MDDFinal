@@ -18,7 +18,7 @@ def main(text, wav_file_path):
     # 2. Predict the gestures with the loaded model
     motion = gp.predict_gestures(wav_file_path, text)
 
-    return motion.detach().numpy()[0]
+    return motion.detach().numpy()
 
 
 def check_feature_type(model_file):

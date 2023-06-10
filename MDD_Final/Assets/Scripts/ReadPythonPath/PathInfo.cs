@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public static class ReadPythonPath
+public static class PathInfo
 {
-    private static string[] personalPaths = new string[5];
+    private static string[] personalPaths = new string[2];
 
-    public static void SetFilePath()
+    public static void SetPathInfo()
     {
         int i = 0;
         
@@ -23,7 +23,7 @@ public static class ReadPythonPath
         reader.Close();
     }
 
-    public static string GetFilePath(int _index) // 0 : PYDLL 1:HOME 2:PACKAGE1 3:PACKAGE2 4:PACKAGE3
+    public static string GetPathInfo(int _index) // 0 : PYDLL 1:HOME
     {
         return personalPaths[_index];
     }
