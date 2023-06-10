@@ -61,7 +61,7 @@ public class GesticulatorRunner : MonoBehaviour
             dynamic demo = Py.Import("demo.demo_custom");
             dynamic motion = demo.main(text, wavFilePath);
 
-            // 모션 데이터를 pandas.core.frame.dataFrame 타입으로 변환
+            // 모션 데이터를 pandas.core.frame.dataFrame 타입으로 변환(Euler 타입)
             dynamic joblib = Py.Import("joblib");
             dynamic dataPipeline = joblib.
                 load(Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator\utils\data_pipe.sav"));
@@ -82,6 +82,7 @@ public class GesticulatorRunner : MonoBehaviour
 
                 for (var j = 0; j < this._frameCount; j++)
                 {
+                    // Euler > Quaternion 변환
                     var rotation  = Quaternion.Euler(
                         (float) x[j] * -1,
                         (float) y[j],
