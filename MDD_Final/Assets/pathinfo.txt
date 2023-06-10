@@ -1,2 +1,2 @@
-PYTHONNET_PYDLL>C:\Users\meteo\anaconda3\envs\gesticulator\python38.dll
-PYTHON_HOME>C:\Users\meteo\anaconda3\envs\gesticulator
+PYTHONNET_PYDLL>C:\Users\Noh\anaconda3\envs\gestenv38\python38.dll
+PYTHON_HOME>C:\Users\Noh\anaconda3\envs\gestenv38

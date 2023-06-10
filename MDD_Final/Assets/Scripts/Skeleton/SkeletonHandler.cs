@@ -10,7 +10,8 @@ public class SkeletonHandler : MonoBehaviour
     private GesticulatorRunner _gesticulatorRunner; // Gesticulator Runner 클래스
     private AvatarHandler _avatarHandler; // 스켈레톤 핸들러 클래스
     private string _wavFilePath; // wav 파일 경로
-    
+    private TextToSpeech _textToSpeech; // TextToSpeech 클래스
+
     // 제스처 재생
     private Quaternion[,] _gestureData; // 제스처 데이터
     private int _gestureDataFrameCount = 0; // 제스처 데이터의 Row 갯수
@@ -21,10 +22,15 @@ public class SkeletonHandler : MonoBehaviour
     {
         this._gesticulatorRunner = FindObjectOfType<GesticulatorRunner>();
         this._avatarHandler = FindObjectOfType<AvatarHandler>();
-        
+
         // Gesticulator가 생성하는 Joint 갯수에 맞춰 JointTransforms 세팅
         this._jointTransforms = new Transform[GesticulatorJointCount];
         this.SetJointTransforms(this.skeleton.transform.GetChild(0));
+
+        this._textToSpeech = FindObjectOfType<TextToSpeech>();
+        Debug.Log(this._textToSpeech);
+        AudioClip _audioClip = this._textToSpeech.RunTTS("i want to eat apple");
+        StartCoroutine(_avatarHandler.PlayAudio(_audioClip));
     }
 
     /**
