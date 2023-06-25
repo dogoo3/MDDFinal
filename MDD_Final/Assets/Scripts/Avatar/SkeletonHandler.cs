@@ -70,8 +70,6 @@ public class SkeletonHandler : MonoBehaviour
         // 아바타의 제스처는 스켈레톤 제스처에서 전이 설정되어 있음
         StartCoroutine(_avatarHandler.PlayAudio(audioClip));
         
-        Debug.Log("(7-2/8) 스켈레톤 제스처 재생 시작");
-
         // 스켈레톤 제스처 재생 - gestureData의 한 프레임씩 20fps 속도로 실행
         var delay = 0;
         var repeatRate = 1.0f / 20;
@@ -106,8 +104,6 @@ public class SkeletonHandler : MonoBehaviour
             
             // wav 파일 삭제
             File.Delete(this._wavFilePath);
-            
-            Debug.Log("(8-2/8) 스켈레톤 제스처 재생 종료");
         }
     }
 }

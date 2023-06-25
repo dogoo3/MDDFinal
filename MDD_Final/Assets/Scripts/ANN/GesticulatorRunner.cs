@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using UnityEngine;
 using Python.Runtime;
@@ -19,30 +18,6 @@ public class GesticulatorRunner : MonoBehaviour
             "RightShoulder", "RightArm", "RightForeArm", "RightHand",
             "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand"
         };
-
-        /* Pythonnet 세팅 시작 */
-        // pathinfo.txt 읽기
-        PathInfo.SetPathInfo();
-        
-        Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", PathInfo.GetPathInfo(0), EnvironmentVariableTarget.Process);
-        // Debug.Log("Python DLL : " + ReadPythonPath.GetFilePath(0));
-        var pythonHome = Environment.ExpandEnvironmentVariables(PathInfo.GetPathInfo(1));
-        // Debug.Log("Python Home : " + pythonHome);
-        var pythonPath = string.Join(
-            Path.PathSeparator.ToString(),
-            new[]
-            {
-                Path.Combine(pythonHome, @"Lib\site-packages"),
-                Path.Combine(pythonHome, @"Lib"),
-                Path.Combine(pythonHome, @"DLLs"),
-                Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator\visualization"),
-                Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator"),
-                Path.Combine(Application.dataPath, @"Plugins\Gesticulator")
-            }
-        );
-        PythonEngine.PythonPath = pythonPath;
-        // Debug.Log("Python Path : " + pythonPath);
-        /* Pythonnet 세팅 끝 */
     }
 
     /**
@@ -50,7 +25,6 @@ public class GesticulatorRunner : MonoBehaviour
      */
     public Quaternion[,] RunGesticulator(string text, string wavFilePath)
     {
-        Debug.Log("(5/8) Gesticulator 시작");
         // Debug.Log("Text : " + text);
         // Debug.Log("WAV File Path : " + wavFilePath);
         
@@ -104,8 +78,6 @@ public class GesticulatorRunner : MonoBehaviour
         //         Debug.Log(this._gestureData[i, j]);
         //     }
         // }
-        
-        Debug.Log("(6/8) Gesticulator 종료");
         
         return this._gestureData;
     }

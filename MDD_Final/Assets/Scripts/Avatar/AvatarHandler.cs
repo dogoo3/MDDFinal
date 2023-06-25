@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class AvatarHandler : MonoBehaviour
 {
+    private GameDirector _gameDirector; // GameDirector 클래스
     [SerializeField] private GameObject skeleton; // 스켈레톤
     [SerializeField] private GameObject avatar; // 아바타
     [SerializeField] private AudioSource audioSource; // 오디오 소스
@@ -11,6 +12,9 @@ public class AvatarHandler : MonoBehaviour
 
     public void Awake()
     {
+        // GameDirector
+        this._gameDirector = FindObjectOfType<GameDirector>();
+        
         // 스켈레톤, 아바타의 휴먼 포즈 핸들러 생성
         var skeletonAnimator = this.skeleton.gameObject.GetComponent<Animator>();
         var avatarAnimator = this.avatar.gameObject.GetComponent<Animator>();
@@ -44,11 +48,10 @@ public class AvatarHandler : MonoBehaviour
         this.audioSource.clip = audioClip;
         this.audioSource.Play();
         
-        Debug.Log("(7-1/8) 아바타 오디오 재생 시작");
-        
         // 재생이 끝날 때까지 대기
         yield return new WaitForSeconds(this.audioSource.clip.length);
         
-        Debug.Log("(8-1/8) 아바타 오디오 재생 종료");
+        // 아바타 재생 프로세스 종료
+        this._gameDirector.SetPlaying(false);
     }
 }

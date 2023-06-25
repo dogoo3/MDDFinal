@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class STTAzure : MonoBehaviour
 {
-    public static STTAzure instance; // 인스턴스화
     [SerializeField] private string subscriptionKey; // Azure Speech API 구독 키
     [SerializeField] private string serviceRegion; // Azure Speech API 서비스 리전
     private SpeechConfig _config; // Azure Speech SDK Config
@@ -14,9 +13,6 @@ public class STTAzure : MonoBehaviour
 
     private void Awake()
     {
-        // 인스턴스화
-        instance = this;
-
         this._skeletonHandler = FindObjectOfType<SkeletonHandler>();
         
         // Azure STT
@@ -27,7 +23,10 @@ public class STTAzure : MonoBehaviour
         }
     }
 
-    public async void SendAudioSample(AudioClip audioClip)
+    /**
+     * STT 실행.
+     */
+    public async void RunStt(AudioClip audioClip)
     {
         // 필수값 입력 체크
         if (string.IsNullOrEmpty(this.subscriptionKey) || string.IsNullOrEmpty(this.serviceRegion))
@@ -35,8 +34,6 @@ public class STTAzure : MonoBehaviour
             Debug.LogError("STT 실패 : Azure Speech API 구독 키, 서비스 리전 값 없음");
             return;
         }
-        
-        Debug.Log("(3/8) STT 시작");
         
         // 오디오 클립을 wav 파일로 저장
         var wavFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav";
@@ -50,8 +47,6 @@ public class STTAzure : MonoBehaviour
         // STT가 성공한 경우
         if (result.Reason == ResultReason.RecognizedSpeech) 
         {
-            Debug.Log("(4/8) STT 종료");
-            
             // 아바타 실행
             _skeletonHandler.RunSkeleton(result.Text, wavFilePath, audioClip);
         }
