@@ -27,7 +27,7 @@ public class AvatarHandler : MonoBehaviour
 
     public void Start()
     {
-        // 스켈레톤 제스처 전이로 인한 위치 이동을 보정
+        // 스켈레톤 제스처 전이로 인한 위치 이동 보정
         this.avatar.transform.position = new Vector3(0, 1, -8);
     }
 
@@ -42,10 +42,12 @@ public class AvatarHandler : MonoBehaviour
     /**
      * 오디오 재생.
      */
-    public IEnumerator PlayAudio(AudioClip audioClip)
+    public IEnumerator PlayAudio(string outputWavFilePath)
     {
+        var outputAudioClip = LoadWav.Load(outputWavFilePath);
+        
         // 오디오 재생
-        this.audioSource.clip = audioClip;
+        this.audioSource.clip = outputAudioClip;
         this.audioSource.Play();
         
         // 재생이 끝날 때까지 대기

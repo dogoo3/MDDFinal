@@ -19,11 +19,5 @@ public class GameDirector : MonoBehaviour
     public void SetPlaying(bool val)
     {
         this._playing = val;
-
-        // Silence 체크 코루틴 시작.
-        if (!val)
-        {
-            this._micHandler.StartSilenceCheckRoutine();
-        }
     }
 }

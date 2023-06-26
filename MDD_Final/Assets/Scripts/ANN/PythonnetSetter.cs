@@ -12,11 +12,9 @@ public class PythonnetSetter : MonoBehaviour
         
         // Python DLL
         Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", PathInfo.GetPathInfo(0), EnvironmentVariableTarget.Process);
-        // Debug.Log("Python DLL : " + ReadPythonPath.GetFilePath(0));
         
         // Python Home
         var pythonHome = Environment.ExpandEnvironmentVariables(PathInfo.GetPathInfo(1));
-        // Debug.Log("Python Home : " + pythonHome);
         
         // Python Path
         var pythonPath = string.Join(
@@ -28,10 +26,10 @@ public class PythonnetSetter : MonoBehaviour
                 Path.Combine(pythonHome, @"DLLs"),
                 Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator\visualization"),
                 Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator"),
-                Path.Combine(Application.dataPath, @"Plugins\Gesticulator")
+                Path.Combine(Application.dataPath, @"Plugins\Gesticulator"),
+                Path.Combine(Application.dataPath, @"Plugins\GPT")
             }
         );
         PythonEngine.PythonPath = pythonPath;
-        // Debug.Log("Python Path : " + pythonPath);
     }
 }

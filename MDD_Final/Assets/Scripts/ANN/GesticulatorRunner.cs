@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 using Python.Runtime;
@@ -23,61 +24,61 @@ public class GesticulatorRunner : MonoBehaviour
     /**
      * Gesticulator 실행.
      */
-    public Quaternion[,] RunGesticulator(string text, string wavFilePath)
+    public Quaternion[,] RunGesticulator(string outputText, string wavFilePath)
     {
-        // Debug.Log("Text : " + text);
-        // Debug.Log("WAV File Path : " + wavFilePath);
+        Debug.Log("Gesticulator 시작");
         
-        PythonEngine.Initialize();
-        using (Py.GIL())
+        try
         {
-            // demo_custom.py의 main 메소드를 실행해 모션 데이터 생성 
-            dynamic demo = Py.Import("demo.demo_custom");
-            dynamic motion = demo.main(text, wavFilePath);
-
-            // 모션 데이터를 pandas.core.frame.dataFrame 타입으로 변환(Euler 타입)
-            dynamic joblib = Py.Import("joblib");
-            dynamic dataPipeline = joblib.
-                load(Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator\utils\data_pipe.sav"));
-            dynamic jointAngles = dataPipeline.inverse_transform(motion)[0].values;
-            
-            // 모션 데이터에서 프레임 갯수 획득
-            this._frameCount = (int) jointAngles.shape[0];
-            
-            // 제스처 데이터 2차원 배열 크기 지정
-            this._gestureData = new Quaternion[this._frameCount, JointCount];
-
-            // 제스처 데이터의 각 Row는 프레임, 각 Col은 Joint 순서로 Rotation값(Quaternion 타입)
-            for (var i = 0; i < JointCount; i++)
+            PythonEngine.Initialize();
+            using (Py.GIL())
             {
-                dynamic x = jointAngles[_jointNames[i] + "_Xrotation"];
-                dynamic y = jointAngles[_jointNames[i] + "_Yrotation"];
-                dynamic z = jointAngles[_jointNames[i] + "_Zrotation"];
+                // demo_custom.py의 main 메소드를 실행해 모션 데이터 생성 
+                dynamic demo = Py.Import("demo.demo_custom");
+                dynamic motion = demo.main(outputText, wavFilePath);
 
-                for (var j = 0; j < this._frameCount; j++)
+                // 모션 데이터를 pandas.core.frame.dataFrame 타입으로 변환(Euler 타입)
+                dynamic joblib = Py.Import("joblib");
+                dynamic dataPipeline = joblib.
+                    load(Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator\utils\data_pipe.sav"));
+                dynamic jointAngles = dataPipeline.inverse_transform(motion)[0].values;
+                
+                // 모션 데이터에서 프레임 갯수 획득
+                this._frameCount = (int) jointAngles.shape[0];
+                
+                // 제스처 데이터 2차원 배열 크기 지정
+                this._gestureData = new Quaternion[this._frameCount, JointCount];
+
+                // 제스처 데이터의 각 Row는 프레임, 각 Col은 Joint 순서로 Rotation값(Quaternion 타입)
+                for (var i = 0; i < JointCount; i++)
                 {
-                    // Euler > Quaternion 변환
-                    var rotation  = Quaternion.Euler(
-                        (float) x[j] * -1,
-                        (float) y[j],
-                        (float) z[j]
-                    );
-                    rotation.w *= -1;
-                    
-                    this._gestureData[j, i] = rotation; 
+                    dynamic x = jointAngles[_jointNames[i] + "_Xrotation"];
+                    dynamic y = jointAngles[_jointNames[i] + "_Yrotation"];
+                    dynamic z = jointAngles[_jointNames[i] + "_Zrotation"];
+
+                    for (var j = 0; j < this._frameCount; j++)
+                    {
+                        // Euler > Quaternion 변환
+                        var rotation  = Quaternion.Euler(
+                            (float) x[j] * -1,
+                            (float) y[j],
+                            (float) z[j]
+                        );
+                        rotation.w *= -1;
+                        
+                        this._gestureData[j, i] = rotation; 
+                    }
                 }
-            }
-        } 
-        PythonEngine.Shutdown();
+            } 
+            PythonEngine.Shutdown();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.ToString());
+            return null;
+        }
         
-        // 제스처 데이터 확인
-        // for (var i = 0; i < this._frameCount; i++)
-        // {
-        //     for (var j = 0; j < this._jointCount; j++)
-        //     {
-        //         Debug.Log(this._gestureData[i, j]);
-        //     }
-        // }
+        Debug.Log("Gesticulator 끝");
         
         return this._gestureData;
     }

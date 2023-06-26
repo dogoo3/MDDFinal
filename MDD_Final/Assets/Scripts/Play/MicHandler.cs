@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 public class MicHandler : MonoBehaviour
@@ -15,12 +13,10 @@ public class MicHandler : MonoBehaviour
     private bool _isReading = true; // 읽기 진행중 여부
     private bool _isRunningDialogue = false; // 발화 진행중 여부
     private const int LoudnessCheckPosSize = 64; // Loudness 체크 대상 샘플링 Position 크기
-    private float[] _loudnessDatas; // Loudness 저장 배열
-    private const float SilenceCheckInterval = 0.1f; // Silence 체크 간격(초)
-    private const float SilenceCheckDestTime = 3f; // Silence 체크 목표 시간(초)
-    private float _silenceCheckedTime = 0f; // Silence 체크된 시간(초) 
-    private const float DialogueStartLoudness = 4.0f; // 사용자 발화 시작으로 볼 Loudness 크기
-    private const float DialogueEndLoudness = 0.18f; // 사용자 발화 끝으로 볼 Loudness 크기
+    private const float DialogueLoudness = 5.0f; // 발화인 Loudness 크기 기준
+    private const float SilenceLoudness = 3.0f; // 발화가 아닌 Loudness 크기 기준
+    private const int SilenceCountDest = 200; // 발화 종료로 인식할 연속 Loudness 횟수 기준
+    private int _slienceCount = 0; // 연속 Loudness 횟수 카운트
     private int _readCompleteSamplingPos = 0; // 읽기 완료된 샘플링 위치
     private float[] _samplingDatas; // 샘플링 데이터
     private float[] _collectedSamplingDatas; // 누적 샘플링 데이터
@@ -33,22 +29,15 @@ public class MicHandler : MonoBehaviour
     {
         // 입력
         this._deviceName = Microphone.devices[0]; // 첫 번째 마이크 사용
-        // Debug.Log("deviceName : " + this._deviceName);
         this._mic = Microphone.Start(this._deviceName, true, 1, SampleRate);
         this._micChannelCount = this._mic.channels;
         
         // 읽기
         this._collectedSamplingDatas = Array.Empty<float>();
-        this._loudnessDatas = Array.Empty<float>();
 
         // STT
         this._gameDirector = FindObjectOfType<GameDirector>();
         this._sttAzure = FindObjectOfType<STTAzure>();
-    }
-
-    private void Start()
-    {
-        this.StartSilenceCheckRoutine();
     }
 
     private void Update()
@@ -87,25 +76,29 @@ public class MicHandler : MonoBehaviour
     {
         // 현재 샘플링 위치
         var currentSamplingPos = Microphone.GetPosition(this._deviceName);
-        // Debug.Log("currentSamplingPos : " + currentSamplingPos);
-        // Debug.Log("currentSamplingPos : " + Math.Round(currentSamplingPos / (double) SampleRate, 1) + "s");
 
         // Loudness 취득
         var loudness = this.GetLoudness(this._mic, currentSamplingPos, LoudnessCheckPosSize);
-        // Debug.Log(loudness);
         
-        // 사용자 발화 진행중이 아닌 경우 + loudness가 기준을 넘는 경우
-        if (!this._isRunningDialogue && loudness > DialogueStartLoudness)
+        // 사용자 발화 진행중이 아닌 경우 + loudness가 기준 이상인 경우
+        if (!this._isRunningDialogue && loudness >= DialogueLoudness)
         {
             // 사용자 발화 시작으로 인식
             Debug.Log("사용자 발화 시작");
             this._isRunningDialogue = true;
         }
+        // 사용자 발화 진행중인 경우 + SilenceCount를 기준까지 채운 경우
+        else if (this._isRunningDialogue && this._slienceCount >= SilenceCountDest)
+        {
+            // 사용자 발화 끝으로 인식
+            Debug.Log("사용자 발화 끝");
+            this._isRunningDialogue = false;
+            this._isReading = false;
+            this._slienceCount = 0;
+        }
         // 사용자 발화 진행중인 경우
         else if (this._isRunningDialogue)
         {
-            this.AddToLoudnessDatas(loudness);
-            
             // 현재 샘플링 위치가 읽기 완료된 샘플링 위치 이후인 경우
             var diff = currentSamplingPos - this._readCompleteSamplingPos;
             if (diff > 0)
@@ -131,10 +124,7 @@ public class MicHandler : MonoBehaviour
                     this._collectedSamplingDatas = new float[newLeng];
                 
                     // oldSampleDatas의 샘플링 데이터 삽입
-                    for (var i = 0; i < oldLeng; i++)
-                    {
-                        this._collectedSamplingDatas[i] = oldSampleDatas[i];
-                    }
+                    for (var i = 0; i < oldLeng; i++) this._collectedSamplingDatas[i] = oldSampleDatas[i];
                 }
                 // 기존에 누적된 샘플링 데이터가 없는 경우
                 else
@@ -144,16 +134,17 @@ public class MicHandler : MonoBehaviour
                 }
 
                 // GetData로 얻은 샘플링 데이터 삽입
-                for (var j = oldLeng; j < newLeng; j++)
-                {
-                    this._collectedSamplingDatas[j] = this._samplingDatas[j - oldLeng];
-                }
+                for (var j = oldLeng; j < newLeng; j++) this._collectedSamplingDatas[j] = this._samplingDatas[j - oldLeng];
                 /* 샘플링 데이터 누적 끝 */
             }
         }
 
         // 현재 샘플링 위치를 읽기 완료된 샘플링 위치로 저장
         this._readCompleteSamplingPos = currentSamplingPos;
+        
+        // Silence 체크
+        if (loudness <= SilenceLoudness) ++this._slienceCount;
+        else this._slienceCount = 0;
     }
 
     /**
@@ -161,117 +152,37 @@ public class MicHandler : MonoBehaviour
      */
     private float GetLoudness(AudioClip audioClip, int lastPos, int targetPosSize)
     {
-        // 체크 대상 샘플링 위치
+        // 대상 샘플링 위치
         var startPos = lastPos - targetPosSize;
-        if (startPos < 0)
-        {
-            return 0;
-        }
+        if (startPos < 0) return 0;
 
-        // 체크 대상 샘플링 데이터
+        // 대상 샘플링 데이터
         var loudnessCheckSamplingDatas = new float[targetPosSize];
         audioClip.GetData(loudnessCheckSamplingDatas, startPos);
 
-        // 체크 대상 샘플링 데이터 크기 평균치에 100배 증폭
+        // 대상 샘플링 데이터 크기 평균치에 100배 증폭
         float sumloudness = 0;
-        for (var i = 0; i < targetPosSize; i++)
-        {
-            sumloudness += Mathf.Abs(loudnessCheckSamplingDatas[i]);
-        }
+        for (var i = 0; i < targetPosSize; i++) sumloudness += Mathf.Abs(loudnessCheckSamplingDatas[i]);
         var avrgloudness = sumloudness / targetPosSize * 100;
         
         // 0.1을 안넘는 경우 0으로 취급
-        if (avrgloudness < 0.1f)
-        {
-            avrgloudness = 0;
-        }
+        if (avrgloudness < 0.1f) avrgloudness = 0;
 
         return avrgloudness;
     }
     
-    /**
-     * Loudness 데이터 저장.
-     */
-    private void AddToLoudnessDatas(float loudness)
-    {
-        var newDecibels = new float[this._loudnessDatas.Length + 1];
-        
-        for (var i = 0; i < this._loudnessDatas.Length; i++)
-        {
-            newDecibels[i] = this._loudnessDatas[i];
-        }
-        newDecibels[this._loudnessDatas.Length] = loudness;
-
-        this._loudnessDatas = newDecibels;
-    }
-    
-    /**
-     * Silence 체크 코루틴 시작.
-     */
-    public void StartSilenceCheckRoutine()
-    {
-        // StartCoroutine(SilenceCheckRoutine());
-    }
-    
-     /**
-     * Silence 체크 코루틴.
-     */
-    private IEnumerator SilenceCheckRoutine()
-    {
-        while (true)
-        {
-            // 읽기 진행중이 아닌 경우, 사용자 발화 진행중이 아닌 경우 무시
-            if (!(this._isReading && this._isRunningDialogue)) continue;
-            
-            // 체크 누적 시간을 채웠을 때
-            if (this._silenceCheckedTime >= SilenceCheckDestTime)
-            {
-                if (this._loudnessDatas.Length > 0) {
-                    var avrg = this._loudnessDatas.Average();
-                    Debug.Log(avrg);
-                    
-                    // 누적 시간동안 Loudness 평균이 기준 아래인 경우
-                    if (avrg < DialogueEndLoudness)
-                    {
-                        // 사용자 발화 끝으로 인식
-                        this._isRunningDialogue = false;
-                        Debug.Log("사용자 발화 끝");
-                    
-                        // Silence Check 초기화
-                        this._loudnessDatas = Array.Empty<float>();
-                        this._silenceCheckedTime = 0f;
-                        
-                        // STT로 전송되도록 읽기 진행중 종료 후 코루틴 종료
-                        this._isReading = false;
-                        yield break;
-                    }
-                }
-                    
-                // Silence Check 초기화
-                this._loudnessDatas = Array.Empty<float>();
-                this._silenceCheckedTime = 0f;
-            }
-
-            // 체크 누적 시간 증가
-            this._silenceCheckedTime += SilenceCheckInterval;
-            
-            // 체크 시간만큼 실제로 대기
-            yield return new WaitForSeconds(SilenceCheckInterval);
-        }
-    }
-
     /**
      * STT로 전송.
      */
     private void SendToStt()
     {
         // 누적 샘플링 데이터를 AudioClip으로 생성
-        var audioClip = AudioClip.Create("Mic_Recording", this._collectedSamplingDatas.Length,
+        var inputAudioClip = AudioClip.Create("UserSpeech", this._collectedSamplingDatas.Length,
             this._micChannelCount, SampleRate, false);
-        audioClip.SetData(this._collectedSamplingDatas, 0);
+        inputAudioClip.SetData(this._collectedSamplingDatas, 0);
         
         // STT 실행
-        this._sttAzure.RunStt(audioClip);
+        this._sttAzure.RunStt(inputAudioClip);
         
         // 누적 샘플링 데이터 초기화
         this._collectedSamplingDatas = Array.Empty<float>();
