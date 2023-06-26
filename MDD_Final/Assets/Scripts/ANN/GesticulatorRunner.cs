@@ -28,12 +28,12 @@ public class GesticulatorRunner : MonoBehaviour
     {
         Debug.Log("Gesticulator 시작");
         
-        try
-        {
+        // try
+        // {
             PythonEngine.Initialize();
             using (Py.GIL())
             {
-                // demo_custom.py의 main 메소드를 실행해 모션 데이터 생성 
+                // 모션 데이터 생성 
                 dynamic demo = Py.Import("demo.demo_custom");
                 dynamic motion = demo.main(outputText, wavFilePath);
 
@@ -71,12 +71,12 @@ public class GesticulatorRunner : MonoBehaviour
                 }
             } 
             PythonEngine.Shutdown();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e.ToString());
-            return null;
-        }
+        // }
+        // catch (Exception e)
+        // {
+        //     Debug.LogError(e.ToString());
+        //     return null;
+        // }
         
         Debug.Log("Gesticulator 끝");
         

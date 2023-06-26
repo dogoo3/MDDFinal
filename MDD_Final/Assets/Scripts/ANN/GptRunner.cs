@@ -31,6 +31,7 @@ public class GptRunner : MonoBehaviour
         }
 
         Debug.Log("GPT 끝");
+        Debug.Log("GPT Result : " + this._outputText);
         
         return this._outputText;
     }

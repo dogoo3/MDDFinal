@@ -48,7 +48,6 @@ public class STTRunner : MonoBehaviour
         }
         
         Debug.Log("STT 끝");
-        
         Debug.Log("STT Result : " + this._inputText);
             
         // GPT 실행

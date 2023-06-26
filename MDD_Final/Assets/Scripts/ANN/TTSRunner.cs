@@ -35,8 +35,8 @@ public class TTSRunner : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError(e.ToString());
-            // this._gameDirector.SetPlaying(false);
-            // return;
+            this._gameDirector.SetPlaying(false);
+            return;
         }
 
         Debug.Log("TTS 끝");
