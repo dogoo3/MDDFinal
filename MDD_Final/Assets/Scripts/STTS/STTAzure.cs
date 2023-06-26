@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
@@ -11,13 +10,13 @@ public class STTAzure : MonoBehaviour
     private SpeechConfig _config; // Azure Speech SDK Config
     private GameDirector _gameDirector; // GameDirector 클래스
     private GptRunner _gptRunner; // GPT 클래스
-    private TTSAzure _ttsAzure; // TTS 클래스
+    private TTSRunner _ttsRunner; // TTS 클래스
 
     private void Awake()
     {
         this._gameDirector = FindObjectOfType<GameDirector>();
         this._gptRunner = FindObjectOfType<GptRunner>();
-        this._ttsAzure = FindObjectOfType<TTSAzure>();
+        this._ttsRunner = FindObjectOfType<TTSRunner>();
         
         // Azure STT
         if (!string.IsNullOrEmpty(this.subscriptionKey) && !string.IsNullOrEmpty(this.serviceRegion))
@@ -43,7 +42,7 @@ public class STTAzure : MonoBehaviour
         }
         
         // 오디오 클립을 wav 파일로 저장
-        var inputWavFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav";
+        var inputWavFileName = "stt.wav";
         SavWav.Save(inputWavFileName, inputAudioClip);
         var inputWavFilePath = Path.Combine(Application.persistentDataPath, inputWavFileName);
 
@@ -55,12 +54,12 @@ public class STTAzure : MonoBehaviour
         if (result.Reason == ResultReason.RecognizedSpeech) 
         {
             Debug.Log("STT 끝");
-         
+            
             // GPT 실행
             var outputText = this._gptRunner.RunGpt(result.Text);
             
             // TTS 실행
-            if (outputText != null) this._ttsAzure.RunTts(outputText);
+            if (outputText != null) this._ttsRunner.RunTts(outputText);
             else this._gameDirector.SetPlaying(false);
         }
         // STT가 성공하지 못한 경우

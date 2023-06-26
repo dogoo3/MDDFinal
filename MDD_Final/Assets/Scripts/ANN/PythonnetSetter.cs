@@ -27,7 +27,9 @@ public class PythonnetSetter : MonoBehaviour
                 Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator\visualization"),
                 Path.Combine(Application.dataPath, @"Plugins\Gesticulator\gesticulator"),
                 Path.Combine(Application.dataPath, @"Plugins\Gesticulator"),
-                Path.Combine(Application.dataPath, @"Plugins\GPT")
+                Path.Combine(Application.dataPath, @"Plugins\GPT"),
+                Path.Combine(Application.dataPath, @"Plugins\STT"),
+                Path.Combine(Application.dataPath, @"Plugins\TTS")
             }
         );
         PythonEngine.PythonPath = pythonPath;

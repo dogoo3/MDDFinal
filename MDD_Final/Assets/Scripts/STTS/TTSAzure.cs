@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.CognitiveServices.Speech;
 using UnityEngine;
@@ -48,8 +46,7 @@ public class TTSAzure : MonoBehaviour
         if (result.Reason == ResultReason.SynthesizingAudioCompleted)
         {
             // TTS 결과를 wav 파일로 저장
-            var outputWavFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav";
-            var outputWavFilePath = Path.Combine(Application.persistentDataPath, outputWavFileName);
+            var outputWavFilePath = Path.Combine(Application.persistentDataPath, "tts.wav");
             using (var audioDataStream = AudioDataStream.FromResult(result))
             {
                 await audioDataStream.SaveToWaveFileAsync(outputWavFilePath);
@@ -58,7 +55,7 @@ public class TTSAzure : MonoBehaviour
             Debug.Log("TTS 끝");
         
             // 아바타 실행
-            this._skeletonHandler.RunSkeleton(outputText, outputWavFilePath);
+            this._skeletonHandler.RunSkeleton(outputText);
         }
         else
         {

@@ -56,9 +56,10 @@ public class SkeletonHandler : MonoBehaviour
     /**
      * 스켈레톤 실행.
      */
-    public void RunSkeleton(string outputText, string outputWavFilePath)
+    public void RunSkeleton(string outputText)
     {
         // Gesticulator 실행
+        var outputWavFilePath = Path.Combine(Application.persistentDataPath, "tts.wav");
         this._gestureData = this._gesticulatorRunner.RunGesticulator(outputText, outputWavFilePath);
         if (this._gestureData != null)
         {

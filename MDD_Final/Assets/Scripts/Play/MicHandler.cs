@@ -14,8 +14,8 @@ public class MicHandler : MonoBehaviour
     private bool _isRunningDialogue = false; // 발화 진행중 여부
     private const int LoudnessCheckPosSize = 64; // Loudness 체크 대상 샘플링 Position 크기
     private const float DialogueLoudness = 5.0f; // 발화인 Loudness 크기 기준
-    private const float SilenceLoudness = 3.0f; // 발화가 아닌 Loudness 크기 기준
-    private const int SilenceCountDest = 200; // 발화 종료로 인식할 연속 Loudness 횟수 기준
+    private const float SilenceLoudness = 4.0f; // 발화가 아닌 Loudness 크기 기준
+    private const int SilenceCountDest = 300; // 발화 종료로 인식할 연속 Loudness 횟수 기준
     private int _slienceCount = 0; // 연속 Loudness 횟수 카운트
     private int _readCompleteSamplingPos = 0; // 읽기 완료된 샘플링 위치
     private float[] _samplingDatas; // 샘플링 데이터
@@ -23,7 +23,7 @@ public class MicHandler : MonoBehaviour
     
     // STT
     private GameDirector _gameDirector; // GameDirector 클래스
-    private STTAzure _sttAzure; // STT 클래스
+    private STTRunner _sttRunner; // STT 클래스
     
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class MicHandler : MonoBehaviour
 
         // STT
         this._gameDirector = FindObjectOfType<GameDirector>();
-        this._sttAzure = FindObjectOfType<STTAzure>();
+        this._sttRunner = FindObjectOfType<STTRunner>();
     }
 
     private void Update()
@@ -182,7 +182,7 @@ public class MicHandler : MonoBehaviour
         inputAudioClip.SetData(this._collectedSamplingDatas, 0);
         
         // STT 실행
-        this._sttAzure.RunStt(inputAudioClip);
+        this._sttRunner.RunStt(inputAudioClip);
         
         // 누적 샘플링 데이터 초기화
         this._collectedSamplingDatas = Array.Empty<float>();

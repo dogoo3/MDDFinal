@@ -164,11 +164,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 216817536}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80186f5ebe226184ca1e4364bf03d33e, type: 3}
+  m_Script: {fileID: 11500000, guid: 49031258953699d479adddd64d1c252a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  subscriptionKey: f624660b1e7c486e9fcbb4ff69eb4bcd
-  serviceRegion: koreacentral
 --- !u!1 &618196729
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,11 +764,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1815738754}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd916a65454b48f43a60ddcb887738a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 8eb85e7acd95e2f4cb5468d15af28c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  subscriptionKey: f624660b1e7c486e9fcbb4ff69eb4bcd
-  serviceRegion: koreacentral
 --- !u!1 &1885835517
 GameObject:
   m_ObjectHideFlags: 0

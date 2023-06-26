@@ -4,7 +4,7 @@ using Python.Runtime;
 
 public class GptRunner : MonoBehaviour
 {
-    private string _outputText;
+    private string _outputText; // GPT 결과
     
     /**
      * GPT 실행.
