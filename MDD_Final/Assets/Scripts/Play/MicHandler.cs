@@ -22,7 +22,7 @@ public class MicHandler : MonoBehaviour
     private float[] _collectedSamplingDatas; // 누적 샘플링 데이터
     
     // STT
-    private GameDirector _gameDirector; // GameDirector 클래스
+    private PlayDirector _playDirector; // PlayDirector 클래스
     private STTRunner _sttRunner; // STT 클래스
     
     private void Awake()
@@ -36,14 +36,14 @@ public class MicHandler : MonoBehaviour
         this._collectedSamplingDatas = Array.Empty<float>();
 
         // STT
-        this._gameDirector = FindObjectOfType<GameDirector>();
+        this._playDirector = FindObjectOfType<PlayDirector>();
         this._sttRunner = FindObjectOfType<STTRunner>();
     }
 
     private void Update()
     {
         // 아바타 재생이 시작된 경우 리턴
-        if (this._gameDirector.GetPlaying()) return;
+        if (this._playDirector.GetPlaying()) return;
         
         // 읽기 진행중인 경우
         if (this._isReading)
@@ -62,7 +62,7 @@ public class MicHandler : MonoBehaviour
             }
             
             // 아바타 재생 프로세스 시작
-            this._gameDirector.SetPlaying(true);
+            this._playDirector.SetPlaying(true);
             
             // STT로 전송
             this.SendToStt();

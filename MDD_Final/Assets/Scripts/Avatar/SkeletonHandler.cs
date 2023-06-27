@@ -8,7 +8,7 @@ public class SkeletonHandler : MonoBehaviour
     private int _settedJointTramsformCount = 0; // 스켈레톤 트랜스폼 저장 카운트
     private const int GesticulatorJointCount = 15; // Gesticulator가 생성하는 Joint 갯수
     private GesticulatorRunner _gesticulatorRunner; // Gesticulator 클래스
-    private GameDirector _gameDirector; // GameDirector 클래스
+    private PlayDirector _playDirector; // PlayDirector 클래스
     private AvatarHandler _avatarHandler; // 스켈레톤 핸들러 클래스
     
     // 제스처 재생
@@ -20,7 +20,7 @@ public class SkeletonHandler : MonoBehaviour
     private void Awake()
     {
         this._gesticulatorRunner = FindObjectOfType<GesticulatorRunner>();
-        this._gameDirector = FindObjectOfType<GameDirector>();
+        this._playDirector = FindObjectOfType<PlayDirector>();
         this._avatarHandler = FindObjectOfType<AvatarHandler>();
         
         // Gesticulator가 생성하는 Joint 갯수에 맞춰 JointTransforms 세팅
@@ -77,7 +77,7 @@ public class SkeletonHandler : MonoBehaviour
         }
         else
         {
-            this._gameDirector.SetPlaying(false);
+            this._playDirector.SetPlaying(false);
         }
     }
 

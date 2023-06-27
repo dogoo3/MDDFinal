@@ -5,12 +5,14 @@ using Python.Runtime;
 
 public class TTSRunner : MonoBehaviour
 {
-    private GameDirector _gameDirector; // GameDirector 클래스
+    private PlayDirector _playDirector; // PlayDirector 클래스
+    private PythonnetSetter _pythonnetSetter; // 파이썬넷 세팅 클래스
     private SkeletonHandler _skeletonHandler; // 스켈레톤 클래스
 
     private void Awake()
     {
-        this._gameDirector = FindObjectOfType<GameDirector>();
+        this._playDirector = FindObjectOfType<PlayDirector>();
+        this._pythonnetSetter = FindObjectOfType<PythonnetSetter>();
         this._skeletonHandler = FindObjectOfType<SkeletonHandler>();
     }
 
@@ -20,6 +22,9 @@ public class TTSRunner : MonoBehaviour
     public void RunTts(string outputText)
     {
         Debug.Log("TTS 시작");
+
+        // 파이썬넷 환경 세팅
+        this._pythonnetSetter.SetPyEnvForStts();
 
         try
         {
@@ -35,7 +40,7 @@ public class TTSRunner : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError(e.ToString());
-            this._gameDirector.SetPlaying(false);
+            this._playDirector.SetPlaying(false);
             return;
         }
 

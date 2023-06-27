@@ -1,14 +1,8 @@
 using UnityEngine;
 
-public class GameDirector : MonoBehaviour
+public class PlayDirector : MonoBehaviour
 {
     private bool _playing; // 아바타 재생 시작 여부
-    private MicHandler _micHandler;
-
-    private void Awake()
-    {
-        this._micHandler = FindObjectOfType<MicHandler>();
-    }
 
     //이하 Getter/Setter
     public bool GetPlaying()

@@ -4,10 +4,12 @@ using System.IO;
 public static class PathInfo
 {
     /**
-     * 0 : PYTHONNET_PYDLL
-     * 1 : PYTHON_HOME
+     * 0 : GPT_GESTI_PYDLL
+     * 1 : GPT_GESTI_PYTHON_HOME
+     * 2 : STTS_PYDLL
+     * 3 : STTS_PYTHON_HOME
      */
-    private static readonly string[] PersonalPaths = new string[2];
+    private static readonly string[] PersonalPaths = new string[4];
     
     /**
      * pathinfo.txt을 읽어 PersonalPaths 값 세팅.
@@ -20,7 +22,7 @@ public static class PathInfo
 
         while (!reader.EndOfStream)
         {
-            var tempStr = reader.ReadLine()?.Split('>');
+            var tempStr = reader.ReadLine()?.Split('=');
             PersonalPaths[i] = tempStr?[1];
             i++;
         }

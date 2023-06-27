@@ -1,9 +1,8 @@
-from STT.api import STT
+import whisper
 
 
-def main(output_text, save_path):
-	# Init TTS with the target model name
-	tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=False, gpu=False)
-	
-	# Run TTS
-	tts.tts_to_file(text=output_text, file_path=save_path)
+def main(input_wav_file_path):
+    model = whisper.load_model("base")
+    result = model.transcribe(input_wav_file_path)
+
+    return result["text"]

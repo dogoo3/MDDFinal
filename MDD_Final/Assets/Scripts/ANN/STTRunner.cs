@@ -1,20 +1,20 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Python.Runtime;
 
 public class STTRunner : MonoBehaviour
 {
-    private GameDirector _gameDirector; // GameDirector 클래스
+    private PlayDirector _playDirector; // PlayDirector 클래스
+    private PythonnetSetter _pythonnetSetter; // 파이썬넷 세팅 클래스
     private GptRunner _gptRunner; // GPT 클래스
     private TTSRunner _ttsRunner; // TTS 클래스
     private string _inputText; // STT 결과
 
     private void Awake()
     {
-        this._gameDirector = FindObjectOfType<GameDirector>();
+        this._playDirector = FindObjectOfType<PlayDirector>();
+        this._pythonnetSetter = FindObjectOfType<PythonnetSetter>();
         this._gptRunner = FindObjectOfType<GptRunner>();
         this._ttsRunner = FindObjectOfType<TTSRunner>();
     }
@@ -24,6 +24,11 @@ public class STTRunner : MonoBehaviour
      */
     public void RunStt(AudioClip inputAudioClip)
     {
+        Debug.Log("STT 시작");
+        
+        // 파이썬넷 환경 세팅
+        this._pythonnetSetter.SetPyEnvForStts();
+        
         // 오디오 클립을 wav 파일로 저장
         var inputWavFileName = "stt.wav";
         SavWav.Save(inputWavFileName, inputAudioClip);
@@ -43,7 +48,7 @@ public class STTRunner : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError(e.ToString());
-            this._gameDirector.SetPlaying(false);
+            this._playDirector.SetPlaying(false);
             return;
         }
         
@@ -55,6 +60,6 @@ public class STTRunner : MonoBehaviour
             
         // TTS 실행
         if (outputText != null) this._ttsRunner.RunTts(outputText);
-        else this._gameDirector.SetPlaying(false);
+        else this._playDirector.SetPlaying(false);
     }
 }

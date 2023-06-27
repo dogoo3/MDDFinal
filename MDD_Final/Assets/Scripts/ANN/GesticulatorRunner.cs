@@ -5,6 +5,7 @@ using Python.Runtime;
 
 public class GesticulatorRunner : MonoBehaviour
 {
+    private PythonnetSetter _pythonnetSetter; // 파이썬넷 세팅 클래스
     private Quaternion[,] _gestureData; // 제스처 데이터
     private string[] _jointNames; // Gesticulator가 생성하는 Joint 이름
     private const int JointCount = 15; // Gesticulator가 생성하는 Joint 갯수
@@ -12,6 +13,8 @@ public class GesticulatorRunner : MonoBehaviour
     
     private void Awake()
     {
+        this._pythonnetSetter = FindObjectOfType<PythonnetSetter>();
+        
         // Gesticulator가 생성하는 Joint 이름 세팅
         this._jointNames = new[]
         {
@@ -27,6 +30,9 @@ public class GesticulatorRunner : MonoBehaviour
     public Quaternion[,] RunGesticulator(string outputText, string wavFilePath)
     {
         Debug.Log("Gesticulator 시작");
+
+        // 파이썬넷 환경 세팅
+        this._pythonnetSetter.SetPyEnvForGptAndGesticulator();
         
         // try
         // {
