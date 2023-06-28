@@ -1,4 +1,2 @@
-STTS_PYDLL=C:\Users\meteo\anaconda3\envs\stts\python38.dll
-STTS_PYTHON_HOME=C:\Users\meteo\anaconda3\envs\stts
 GPT_GESTI_PYDLL=C:\Users\meteo\anaconda3\envs\gpt_gesti\python38.dll
 GPT_GESTI_PYTHON_HOME=C:\Users\meteo\anaconda3\envs\gpt_gesti
